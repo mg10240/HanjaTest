@@ -20,204 +20,150 @@
             writing-mode: vertical-rl;
             text-orientation: mixed;
         }
-        .char-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-        }
         .writer-wrapper {
-            background: #111827;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+            background: #ffffff;
+            border-radius: 2rem;
+            padding: 1.25rem;
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+            border: 1px solid #e5e7eb;
         }
         .stage-title {
-            font-size: 3.5rem;
-            line-height: 1;
+            font-size: 5rem;
+            line-height: 0.9;
             font-weight: 700;
-            color: #f43f5e;
-            letter-spacing: 0.15em;
-        }
-        .tail-container {
-            max-width: 1280px;
-            margin: 0 auto;
+            color: #0088ff;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+<body class="bg-[#f2f2f7] text-[#111827] min-h-screen">
     <div class="flex h-screen">
         <!-- 사이드바 -->
-        <div class="w-80 bg-zinc-900 border-r border-zinc-800 flex flex-col">
-            <div class="p-8 border-b border-zinc-800">
+        <div class="w-80 bg-white border-r border-gray-100 flex flex-col shadow-sm">
+            <div class="p-8 border-b border-gray-100">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-rose-500 rounded-2xl flex items-center justify-center text-2xl">文</div>
-                    <h1 class="text-3xl font-bold tracking-tighter hanzi-font">우종서</h1>
+                    <div class="w-10 h-10 bg-[#0088ff] rounded-2xl flex items-center justify-center text-3xl text-white">文</div>
+                    <h1 class="text-3xl font-bold tracking-tighter hanzi-font text-[#0088ff]">우종서</h1>
                 </div>
-                <p class="text-zinc-400 text-sm mt-1">한자 단어 세로 학습기</p>
+                <p class="text-gray-400 text-sm mt-1">세로 한자 학습</p>
             </div>
 
-            <!-- 입력 -->
             <div class="p-8 flex-1 overflow-auto">
-                <label class="block text-sm font-medium text-zinc-400 mb-2">학습할 텍스트 (띄어쓰기로 단어 구분)</label>
+                <label class="block text-sm font-medium text-gray-500 mb-3">학습할 한자 단어 (띄어쓰기로 구분)</label>
                 <textarea id="input-text" rows="4" 
-                    class="w-full bg-zinc-800 border border-zinc-700 rounded-3xl px-5 py-4 text-lg resize-none focus:outline-none focus:border-rose-500"
-                    placeholder="你好 世界 学习 汉字"></textarea>
+                    class="w-full bg-white border border-gray-200 focus:border-[#0088ff] rounded-3xl px-6 py-5 text-lg resize-none focus:outline-none shadow-sm"
+                    placeholder="甘言利說 學習 漢字"></textarea>
                 
                 <button onclick="loadWords()" 
-                    class="mt-6 w-full bg-white text-zinc-900 hover:bg-amber-100 font-medium py-4 rounded-3xl text-lg transition-all">
-                    단어 로드하기
+                    class="mt-8 w-full bg-[#0088ff] hover:bg-[#0066cc] text-white font-medium py-4 rounded-3xl text-lg transition-all shadow-md">
+                    단어 불러오기
                 </button>
 
                 <!-- 단어 목록 -->
-                <div class="mt-10">
-                    <div class="flex items-center justify-between text-xs uppercase tracking-widest text-zinc-500 mb-3">
-                        <span>단어 목록</span>
-                        <span id="word-count">0</span>
-                    </div>
-                    <div id="word-list" class="space-y-1 max-h-96 overflow-auto"></div>
-                </div>
-
-                <!-- 옵션 토글 -->
                 <div class="mt-12">
-                    <div class="text-xs uppercase tracking-widest text-zinc-500 mb-4">학습 단계 활성화</div>
-                    <div class="space-y-5">
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-1" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">1. 일반 보기</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-2" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">2. 부수 보기</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-3" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">3. 획순 보기 (5배속·무한루프)</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-4" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">4. 스트로크 팬닝</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-5" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">5. 일반 퀴즈 (자동 진행)</span>
-                        </label>
-                        <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="checkbox" id="toggle-6" checked onchange="updateToggles()" class="w-5 h-5 accent-rose-500">
-                            <span class="text-zinc-300">6. 고급 퀴즈 (아웃라인 숨김)</span>
-                        </label>
+                    <div class="flex justify-between items-center text-xs uppercase tracking-widest text-gray-400 mb-4">
+                        <span>단어 목록</span>
+                        <span id="word-count" class="font-mono">0</span>
                     </div>
+                    <div id="word-list" class="space-y-2 max-h-96 overflow-auto pr-2"></div>
                 </div>
             </div>
 
-            <div class="p-6 border-t border-zinc-800 text-xs text-zinc-500 text-center">
-                Powered by HanziWriter • 정적 웹사이트
+            <div class="p-6 border-t border-gray-100 text-xs text-gray-400 text-center">
+                Powered by HanziWriter • 정적 웹
             </div>
         </div>
 
         <!-- 메인 영역 -->
         <div class="flex-1 flex flex-col">
-            <!-- 상단 프로그레스 -->
-            <div class="h-20 border-b border-zinc-800 flex items-center px-12">
-                <div class="flex-1">
-                    <div class="flex items-center gap-8">
-                        <button onclick="prevWord()" 
-                            class="px-6 py-3 text-sm font-medium flex items-center gap-2 hover:bg-zinc-800 rounded-3xl transition-colors">
-                            ← 이전 단어
-                        </button>
-                        <div class="text-center">
-                            <div id="progress-word" class="text-2xl font-medium hanzi-font">1 / 1</div>
-                            <div id="current-word-display" class="text-4xl hanzi-font text-amber-300 vertical-rl h-12 inline-block"></div>
-                        </div>
-                        <button onclick="nextWord()" 
-                            class="px-6 py-3 text-sm font-medium flex items-center gap-2 hover:bg-zinc-800 rounded-3xl transition-colors">
-                            다음 단어 →
-                        </button>
+            <!-- 상단 -->
+            <div class="h-20 bg-white border-b border-gray-100 flex items-center px-12">
+                <div class="flex-1 flex items-center gap-8">
+                    <button onclick="prevWord()" 
+                        class="px-7 py-3 text-sm font-medium flex items-center gap-2 hover:bg-gray-100 rounded-3xl transition-colors">
+                        ← 이전
+                    </button>
+                    <div class="text-center">
+                        <div id="progress-word" class="text-xl font-semibold text-gray-400">1 / 1</div>
+                        <div id="current-word-display" 
+                            class="text-5xl hanzi-font text-[#0088ff] vertical-rl h-16 inline-block leading-none tracking-widest"></div>
                     </div>
+                    <button onclick="nextWord()" 
+                        class="px-7 py-3 text-sm font-medium flex items-center gap-2 hover:bg-gray-100 rounded-3xl transition-colors">
+                        다음 →
+                    </button>
                 </div>
-                
-                <div class="flex items-center gap-6">
-                    <div onclick="prevStage()" 
-                        class="cursor-pointer w-11 h-11 flex items-center justify-center text-3xl hover:bg-zinc-800 rounded-2xl transition-colors">‹</div>
-                    <div class="text-center w-48">
-                        <div id="stage-number" class="text-4xl font-bold text-rose-400">1</div>
-                        <div id="stage-name" class="text-sm uppercase tracking-widest text-zinc-400">일반 보기</div>
+
+                <div class="flex items-center gap-8">
+                    <button onclick="prevStage()" 
+                        class="w-12 h-12 flex items-center justify-center text-4xl text-gray-300 hover:text-[#0088ff] transition-colors">‹</button>
+                    <div class="text-center w-52">
+                        <div id="stage-number" class="text-6xl font-bold text-[#0088ff] leading-none">1</div>
+                        <div id="stage-name" class="text-sm uppercase tracking-[0.125em] text-gray-400 mt-1">획순 보기</div>
                     </div>
-                    <div onclick="nextStage()" 
-                        class="cursor-pointer w-11 h-11 flex items-center justify-center text-3xl hover:bg-zinc-800 rounded-2xl transition-colors">›</div>
+                    <button onclick="nextStage()" 
+                        class="w-12 h-12 flex items-center justify-center text-4xl text-gray-300 hover:text-[#0088ff] transition-colors">›</button>
                 </div>
             </div>
 
-            <!-- 학습 콘텐츠 -->
-            <div class="flex-1 p-12 overflow-auto" id="main-content">
-                <div class="max-w-5xl mx-auto">
-                    <!-- 단계 제목 (세로) -->
-                    <div class="flex justify-between items-start">
+            <!-- 콘텐츠 -->
+            <div class="flex-1 p-16 overflow-auto" id="main-content">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex gap-16 items-start">
+                        <!-- 세로 단계 제목 -->
                         <div id="stage-title" 
-                            class="stage-title vertical-rl h-96 flex items-center pr-8 border-r border-zinc-700"></div>
+                            class="stage-title vertical-rl h-[520px] flex items-center border-r border-gray-100 pr-10"></div>
                         
-                        <!-- 콘텐츠 영역 -->
-                        <div class="flex-1 pl-16" id="stage-content">
-                            <!-- JS로 동적 생성 -->
+                        <!-- 실제 학습 영역 -->
+                        <div class="flex-1" id="stage-content">
+                            <!-- JS로 채워짐 -->
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 하단 컨트롤 -->
-            <div class="h-24 border-t border-zinc-800 bg-zinc-900 flex items-center px-12">
+            <!-- 하단 액션 -->
+            <div class="h-24 bg-white border-t border-gray-100 flex items-center px-12">
                 <button onclick="startCurrentStage()" 
                     id="action-btn"
-                    class="ml-auto px-10 py-5 bg-rose-500 hover:bg-rose-600 rounded-3xl text-xl font-medium transition-all flex items-center gap-3">
-                    <span id="btn-text">단계 시작하기</span>
-                    <span class="text-2xl">▶</span>
+                    class="ml-auto px-12 py-6 bg-[#0088ff] hover:bg-[#0066cc] text-white rounded-3xl text-xl font-medium shadow-lg transition-all flex items-center gap-4">
+                    <span id="btn-text">자동 재생 시작</span>
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // 전역 변수
         let words = [];
         let currentWordIdx = 0;
-        let currentStageIdx = 0; // enabledStages 내 인덱스
-        let enabledStages = [1,2,3,4,5,6];
+        let currentStageIdx = 0;
         let writers = [];
         let currentWord = "";
         let animationTimer = null;
         let isQuizzing = false;
 
-        // Tailwind 스크립트 실행
         function initTailwind() {
-            tailwind.config = {
-                content: [],
-                theme: {
-                    extend: {}
-                }
-            }
+            tailwind.config = { content: [] };
         }
 
-        // 단어 로드
         function loadWords() {
-            const text = document.getElementById('input-text').value.trim();
-            if (!text) return alert("텍스트를 입력해주세요.");
+            let text = document.getElementById('input-text').value.trim();
+            if (!text) return alert("한자 단어를 입력해 주세요.");
             words = text.split(/\s+/).filter(w => w.length > 0);
+            currentWordIdx = 0;
+            currentStageIdx = 0;
             renderWordList();
-            if (words.length > 0) {
-                currentWordIdx = 0;
-                currentStageIdx = 0;
-                loadCurrentWord();
-            }
+            if (words.length > 0) loadCurrentWord();
         }
 
         function renderWordList() {
             const container = document.getElementById('word-list');
             container.innerHTML = '';
             document.getElementById('word-count').textContent = words.length;
-            
+
             words.forEach((word, i) => {
                 const div = document.createElement('div');
-                div.className = `px-5 py-4 rounded-3xl cursor-pointer transition-all text-lg hanzi-font ${i === currentWordIdx ? 'bg-rose-500 text-white' : 'hover:bg-zinc-800'}`;
+                div.className = `px-6 py-4 rounded-3xl cursor-pointer transition-all text-xl hanzi-font border ${i === currentWordIdx ? 'bg-[#0088ff] text-white border-[#0088ff]' : 'bg-white hover:bg-gray-50 border-gray-100'}`;
                 div.textContent = word;
                 div.onclick = () => {
                     currentWordIdx = i;
@@ -229,85 +175,60 @@
             });
         }
 
-        function updateToggles() {
-            enabledStages = [];
-            if (document.getElementById('toggle-1').checked) enabledStages.push(1);
-            if (document.getElementById('toggle-2').checked) enabledStages.push(2);
-            if (document.getElementById('toggle-3').checked) enabledStages.push(3);
-            if (document.getElementById('toggle-4').checked) enabledStages.push(4);
-            if (document.getElementById('toggle-5').checked) enabledStages.push(5);
-            if (document.getElementById('toggle-6').checked) enabledStages.push(6);
-            
-            // 현재 단계가 유효한지 확인
-            if (enabledStages.length === 0) return;
-            if (currentStageIdx >= enabledStages.length) currentStageIdx = 0;
-            updateProgress();
-        }
-
         function loadCurrentWord() {
             if (words.length === 0) return;
             currentWord = words[currentWordIdx];
             renderWordList();
             updateProgress();
+
             writers = [];
-            document.getElementById('stage-content').innerHTML = `
-                <div id="char-container" class="char-container mx-auto"></div>
-            `;
+            document.getElementById('stage-content').innerHTML = `<div id="char-container" class="flex justify-center gap-8"></div>`;
             const container = document.getElementById('char-container');
-            const chars = [...currentWord];
-            
-            chars.forEach(ch => {
+
+            const chars = Array.from(currentWord).map(ch => ch.normalize('NFKC')); // 호환한자(利 등) 자동 변환
+
+            chars.forEach((ch, idx) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'writer-wrapper';
                 const div = document.createElement('div');
-                div.style.width = '220px';
-                div.style.height = '220px';
+                div.style.width = '240px';
+                div.style.height = '240px';
                 wrapper.appendChild(div);
                 container.appendChild(wrapper);
-                
-                const writer = HanziWriter.create(div, ch, {
-                    width: 200,
-                    height: 200,
-                    padding: 15,
-                    strokeColor: '#e0f2fe',
-                    radicalColor: '#fb7185',
-                    outlineColor: '#334155',
-                    drawingColor: '#67e8f9',
-                    strokeAnimationSpeed: 1.8,
-                    delayBetweenStrokes: 180,
-                    showOutline: true,
-                    showCharacter: true,
-                    renderer: 'svg'
-                });
-                writers.push(writer);
+
+                try {
+                    const writer = HanziWriter.create(div, ch, {
+                        width: 220,
+                        height: 220,
+                        padding: 20,
+                        strokeColor: '#0088ff',
+                        radicalColor: '#0055cc',
+                        outlineColor: '#e5e7eb',
+                        drawingColor: '#00aaff',
+                        strokeAnimationSpeed: 1,
+                        delayBetweenStrokes: 120,
+                        showOutline: true,
+                        showCharacter: true
+                    });
+                    writers.push(writer);
+                } catch(e) {
+                    console.warn(`한자 ${ch} 로드 실패`, e);
+                }
             });
-            
-            // 첫 단계 로드
+
             enterCurrentStage();
         }
 
         function updateProgress() {
             document.getElementById('progress-word').textContent = `${currentWordIdx + 1} / ${words.length}`;
-            document.getElementById('current-word-display').innerHTML = currentWord || '—';
-        }
-
-        function getCurrentStage() {
-            return enabledStages[currentStageIdx] || 1;
+            document.getElementById('current-word-display').textContent = currentWord || '—';
         }
 
         function updateStageUI() {
-            const stage = getCurrentStage();
-            let name = '';
-            let title = '';
-            switch(stage) {
-                case 1: name = '일반 보기'; title = '일반'; break;
-                case 2: name = '부수 보기'; title = '部首'; break;
-                case 3: name = '획순 보기'; title = '筆順'; break;
-                case 4: name = '스트로크 팬닝'; title = '散開'; break;
-                case 5: name = '일반 퀴즈'; title = '練習'; break;
-                case 6: name = '고급 퀴즈'; title = '挑戰'; break;
-            }
-            document.getElementById('stage-number').textContent = enabledStages.indexOf(stage) + 1;
+            const stage = currentStageIdx === 0 ? 1 : 2;
+            let name = stage === 1 ? '획순 보기' : '연습하기';
+            let title = stage === 1 ? '筆順' : '練習';
+            document.getElementById('stage-number').textContent = stage;
             document.getElementById('stage-name').textContent = name;
             document.getElementById('stage-title').innerHTML = title;
         }
@@ -315,232 +236,104 @@
         function enterCurrentStage() {
             if (writers.length === 0) return;
             updateStageUI();
-            const content = document.getElementById('stage-content');
-            const stage = getCurrentStage();
-            
-            // 이전 애니메이션/퀴즈 정리
             clearInterval(animationTimer);
             writers.forEach(w => {
-                w.pauseAnimation();
-                w.cancelQuiz();
+                if (w) {
+                    w.pauseAnimation();
+                    w.cancelQuiz();
+                }
             });
             isQuizzing = false;
 
-            // 공통 초기화
-            writers.forEach(w => {
-                w.showCharacter();
-                w.showOutline();
-                w.updateColor('radicalColor', '#fb7185');
-            });
+            const stage = currentStageIdx === 0 ? 1 : 2;
 
-            switch(stage) {
-                case 1: // 일반 보기
-                    document.getElementById('btn-text').textContent = '전체 애니메이션';
-                    break;
-                    
-                case 2: // 부수 보기
-                    writers.forEach(w => w.updateColor('radicalColor', '#f43f5e'));
-                    document.getElementById('btn-text').textContent = '부수 강조 애니메이션';
-                    break;
-                    
-                case 3: // 획순 보기 (5배속, chaining, 무한루프, buttonless)
-                    document.getElementById('btn-text').textContent = '무한 루프 시작';
-                    break;
-                    
-                case 4: // 스트로크 팬닝
-                    renderFanning();
-                    document.getElementById('btn-text').textContent = '다시 그리기';
-                    break;
-                    
-                case 5: // 일반 퀴즈 (buttonless, 자동 다음 글자)
-                    document.getElementById('btn-text').textContent = '퀴즈 시작 (자동 진행)';
-                    break;
-                    
-                case 6: // 고급 퀴즈
-                    renderAdvancedQuiz();
-                    document.getElementById('btn-text').textContent = '고급 퀴즈 시작';
-                    break;
+            if (stage === 1) {
+                // 획순 보기: 즉시 자동 재생 (5배속, chaining, 무한 루프, buttonless)
+                document.getElementById('btn-text').textContent = '퀴즈로 이동';
+                writers.forEach(w => {
+                    if (w) w.showCharacter();
+                });
+                startInfiniteChainedAnimation();
+            } else {
+                // 일반 퀴즈 준비 화면
+                document.getElementById('btn-text').textContent = '퀴즈 시작하기';
+                writers.forEach(w => {
+                    if (w) {
+                        w.showOutline();
+                        w.hideCharacter();
+                    }
+                });
             }
         }
 
         function startCurrentStage() {
-            const stage = getCurrentStage();
-            switch(stage) {
-                case 1:
-                    animateAllOnce(1.0);
-                    break;
-                case 2:
-                    animateAllOnce(1.0);
-                    break;
-                case 3:
-                    startInfiniteChainedAnimation();
-                    break;
-                case 4:
-                    renderFanning();
-                    break;
-                case 5:
-                    startSequentialQuiz(false);
-                    break;
-                case 6:
-                    startSequentialQuiz(true);
-                    break;
+            const stage = currentStageIdx === 0 ? 1 : 2;
+            if (stage === 1) {
+                // 이미 자동 재생 중이므로 바로 퀴즈로 이동
+                currentStageIdx = 1;
+                enterCurrentStage();
+            } else {
+                startSequentialQuiz();
             }
-        }
-
-        function animateAllOnce(speed) {
-            let i = 0;
-            const next = () => {
-                if (i >= writers.length) return;
-                writers[i].animateCharacter({
-                    strokeAnimationSpeed: speed,
-                    onComplete: () => { i++; next(); }
-                });
-            };
-            next();
         }
 
         function startInfiniteChainedAnimation() {
             let i = 0;
             const loop = () => {
                 if (i >= writers.length) {
-                    animationTimer = setTimeout(() => { i = 0; loop(); }, 1800);
+                    animationTimer = setTimeout(() => { i = 0; loop(); }, 1200);
                     return;
                 }
-                writers[i].animateCharacter({
-                    strokeAnimationSpeed: 5,
-                    onComplete: () => { i++; loop(); }
-                });
+                const w = writers[i];
+                if (w) {
+                    w.animateCharacter({
+                        strokeAnimationSpeed: 5,
+                        onComplete: () => { i++; loop(); }
+                    });
+                } else {
+                    i++; loop();
+                }
             };
             loop();
-            // 버튼less 느낌 유지 → 완료 버튼은 별도 없음, 다음 단계로 이동 가능
         }
 
-        // 스트로크 팬닝 (raw SVG 사용)
-        function renderFanning() {
-            const container = document.getElementById('char-container');
-            container.innerHTML = '';
-            
-            writers.forEach((writer, idx) => {
-                const ch = [...currentWord][idx];
-                const wrapper = document.createElement('div');
-                wrapper.className = 'writer-wrapper w-[380px]';
-                
-                HanziWriter.loadCharacterData(ch).then(data => {
-                    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                    svg.setAttribute("width", "360");
-                    svg.setAttribute("height", "240");
-                    svg.setAttribute("viewBox", "0 0 1200 1024");
-                    
-                    const num = data.strokes.length;
-                    const offset = Math.max(55, 680 / Math.max(1, num - 1));
-                    
-                    data.strokes.forEach((pathData, i) => {
-                        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-                        const tx = 180 + (i - (num-1)/2) * offset;
-                        g.setAttribute("transform", `translate(${tx} 80) scale(0.85)`);
-                        
-                        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                        path.setAttribute("d", pathData);
-                        path.setAttribute("fill", "none");
-                        path.setAttribute("stroke", i % 2 === 0 ? "#67e8f9" : "#f472b6");
-                        path.setAttribute("stroke-width", "22");
-                        path.setAttribute("stroke-linecap", "round");
-                        path.setAttribute("stroke-linejoin", "round");
-                        g.appendChild(path);
-                        svg.appendChild(g);
-                    });
-                    
-                    wrapper.appendChild(svg);
-                    container.appendChild(wrapper);
-                });
-            });
-        }
-
-        function startSequentialQuiz(advanced) {
+        function startSequentialQuiz() {
             isQuizzing = true;
             let charIdx = 0;
-            
-            const startNextQuiz = () => {
+
+            const startNext = () => {
                 if (charIdx >= writers.length) {
                     isQuizzing = false;
-                    alert("🎉 단어 퀴즈 완료! 다음 단계로 이동하세요.");
+                    setTimeout(() => {
+                        if (currentWordIdx < words.length - 1) {
+                            currentWordIdx++;
+                            currentStageIdx = 0;
+                            loadCurrentWord();
+                        } else {
+                            alert("🎉 모든 단어 학습 완료!");
+                        }
+                    }, 800);
                     return;
                 }
-                
+
                 const w = writers[charIdx];
+                if (!w) { charIdx++; startNext(); return; }
+
                 w.hideCharacter();
-                if (advanced) {
-                    w.hideOutline();
-                    // 좌우 레이아웃은 이미 renderAdvancedQuiz에서 처리
-                } else {
-                    w.showOutline();
-                }
-                
+                w.showOutline();
+
                 w.quiz({
-                    onComplete: (data) => {
+                    leniency: 0.82,
+                    showHintAfterMisses: 1,
+                    onComplete: () => {
                         w.showCharacter();
                         charIdx++;
-                        setTimeout(startNextQuiz, 800);
-                    },
-                    leniency: 0.85,
-                    showHintAfterMisses: 2
+                        setTimeout(startNext, 600);
+                    }
                 });
             };
-            
-            if (advanced) {
-                renderAdvancedQuiz();
-            }
-            startNextQuiz();
-        }
 
-        function renderAdvancedQuiz() {
-            const content = document.getElementById('stage-content');
-            content.innerHTML = `
-                <div class="grid grid-cols-2 gap-12">
-                    <!-- 왼쪽: 퀴즈 영역 -->
-                    <div>
-                        <div class="text-rose-400 text-sm mb-4 tracking-widest">좌측 — 직접 쓰기 (아웃라인 없음)</div>
-                        <div id="quiz-left" class="char-container mx-auto"></div>
-                    </div>
-                    <!-- 오른쪽: 참조 단어 -->
-                    <div>
-                        <div class="text-rose-400 text-sm mb-4 tracking-widest">우측 — 참조 한자</div>
-                        <div class="bg-zinc-900 rounded-3xl p-12 flex items-center justify-center min-h-[520px]">
-                            <div id="reference-word" 
-                                class="text-[9rem] leading-none hanzi-font text-amber-300 vertical-rl text-center tracking-widest">
-                                ${currentWord}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            // 왼쪽에 새 writer 생성 (아웃라인 숨김)
-            const leftContainer = document.getElementById('quiz-left');
-            leftContainer.innerHTML = '';
-            const chars = [...currentWord];
-            
-            writers = []; // 재생성
-            chars.forEach(ch => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'writer-wrapper';
-                const div = document.createElement('div');
-                div.style.width = '210px';
-                div.style.height = '210px';
-                wrapper.appendChild(div);
-                leftContainer.appendChild(wrapper);
-                
-                const w = HanziWriter.create(div, ch, {
-                    width: 190,
-                    height: 190,
-                    padding: 12,
-                    showOutline: false,
-                    showCharacter: false,
-                    strokeColor: '#67e8f9',
-                    drawingColor: '#a5f3fc'
-                });
-                writers.push(w);
-            });
+            startNext();
         }
 
         function prevWord() {
@@ -550,7 +343,7 @@
                 loadCurrentWord();
             }
         }
-        
+
         function nextWord() {
             if (currentWordIdx < words.length - 1) {
                 currentWordIdx++;
@@ -558,16 +351,16 @@
                 loadCurrentWord();
             }
         }
-        
+
         function prevStage() {
             if (currentStageIdx > 0) {
                 currentStageIdx--;
                 enterCurrentStage();
             }
         }
-        
+
         function nextStage() {
-            if (currentStageIdx < enabledStages.length - 1) {
+            if (currentStageIdx < 1) {
                 currentStageIdx++;
                 enterCurrentStage();
             } else if (currentWordIdx < words.length - 1) {
@@ -577,7 +370,7 @@
             }
         }
 
-        // 키보드 단축키
+        // 키보드
         document.addEventListener('keydown', e => {
             if (e.key === "ArrowRight") nextStage();
             if (e.key === "ArrowLeft") prevStage();
@@ -585,15 +378,10 @@
             if (e.key === "ArrowUp") prevWord();
         });
 
-        // 초기화
         window.onload = () => {
             initTailwind();
-            // 데모 텍스트 자동 입력
-            document.getElementById('input-text').value = "你好 世界 漢字 學習 練習";
+            document.getElementById('input-text').value = "甘言利說 學習 漢字 你好 世界";
             loadWords();
-            
-            // 첫 단계 UI
-            updateStageUI();
         };
     </script>
 </body>
